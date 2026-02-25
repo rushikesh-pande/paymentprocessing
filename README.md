@@ -1,7 +1,7 @@
 # paymentprocessing
 
 ## Overview
-Microservice for: **payment :- Complete order payment as per customer choice**
+Microservice for: **payment :- enchancement payement system to get voucher disscount if customer enters voucher code,publish event in kafka topic**
 
 ## Tech Stack
 - Java 17
