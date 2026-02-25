@@ -1,61 +1,29 @@
-# Payment Processing Service
+# paymentprocessing
 
 ## Overview
-Microservice for processing customer order payments with multiple payment methods.
+Microservice for: **payment :- Complete order payment as per customer choice**
 
-## Features
-- Process payments (Credit Card, Debit Card, UPI, Wallet, COD)
-- Payment gateway integration
-- Transaction tracking
-- Payment status retrieval
-
-## API Endpoints
-
-### Process Payment
-**POST** `/api/v1/payments`
-
-### Get Payment Status
-**GET** `/api/v1/payments/{paymentId}`
-
-### Alternative Payment Methods (Enhancement)
-
-#### Card Payment
-**POST** `/api/v1/payments/alternative/card`
-
-Request body example:
-```json
-{
-  "orderId": "ORD-A1B2C3D4",
-  "amount": 1059.97,
-  "cardType": "CREDIT",
-  "cardNumber": "4111111111111111",
-  "cardHolderName": "John Doe",
-  "expiryMonth": 12,
-  "expiryYear": 2028,
-  "cvv": "123"
-}
-```
-
-#### UPI Payment
-**POST** `/api/v1/payments/alternative/upi`
-
-Request body example:
-```json
-{
-  "orderId": "ORD-A1B2C3D4",
-  "amount": 1059.97,
-  "upiId": "john.doe@okbank",
-  "customerName": "John Doe",
-  "customerPhone": "+15551234567"
-}
-```
-
-## Technology Stack
+## Tech Stack
 - Java 17
 - Spring Boot 3.2.2
-- PostgreSQL
+- Maven
+- Kafka (topic: `payment.completed`)
+
+## API Endpoints
+| Method | Path | Description |
+|--------|------|-------------|
+| POST   | /api/v1/payments | Create |
+| GET    | /api/v1/payments | List all |
+| GET    | /api/v1/payments/{id} | Get by ID |
+| PUT    | /api/v1/payments/{id} | Update |
+| DELETE | /api/v1/payments/{id} | Delete |
 
 ## Running
 ```bash
 mvn spring-boot:run
 ```
+Service runs on port **8083**
+
+## Kafka
+Topic: `payment.completed`
+Events: `PAYMENT_CREATED`, `PAYMENT_UPDATED`, `PAYMENT_DELETED`
