@@ -9,6 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PaymentResponse {
 
+    /** TraceId for end-to-end request tracking */
+    private String traceId;
+
+
     private String paymentId;
     private String orderId;
     private String status;

@@ -6,6 +6,7 @@ import com.payment.entity.Payment;
 import com.payment.entity.PaymentMethod;
 import com.payment.entity.PaymentStatus;
 import com.payment.repository.PaymentRepository;
+import com.orderprocessing.trace.TraceContextHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class PaymentService {
     private final VoucherService voucherService;
     @Transactional
     public PaymentResponse processPayment(PaymentRequest request) {
-        log.info("Processing payment for order: {}", request.getOrderId());
+        log.info("[{}] Processing payment for order: {}", TraceContextHolder.getTraceId(), {}", request.getOrderId());
         String paymentId = generatePaymentId();
         BigDecimal originalAmount = request.getAmount();
         BigDecimal finalAmount = originalAmount;

@@ -63,6 +63,12 @@
             <artifactId>spring-kafka-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- trace-context-lib: distributed TraceId propagation -->
+        <dependency>
+            <groupId>com.orderprocessing</groupId>
+            <artifactId>trace-context-lib</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
