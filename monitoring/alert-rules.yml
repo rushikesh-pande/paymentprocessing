@@ -1,0 +1,79 @@
+# Monitoring Enhancement: Prometheus Alert Rules for paymentprocessing
+# Deploy to AlertManager alongside Prometheus scrape config.
+groups:
+  - name: paymentprocessing_alerts
+    interval: 30s
+    rules:
+
+      # ── High Error Rate ──────────────────────────────────────────────────────
+      - alert: HighErrorRate_paymentprocessing
+        expr: |
+          rate(paymentprocessing_errors_total{service="paymentprocessing"}[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+          service: paymentprocessing
+        annotations:
+          summary: "High error rate on {{ $labels.service }}"
+          description: "Error rate is {{ $value | humanizePercentage }} on paymentprocessing"
+
+      # ── High HTTP Latency ────────────────────────────────────────────────────
+      - alert: HighLatency_paymentprocessing
+        expr: |
+          histogram_quantile(0.95, rate(http_server_requests_seconds_bucket{service="paymentprocessing"}[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+          service: paymentprocessing
+        annotations:
+          summary: "p95 latency above 2s on paymentprocessing"
+          description: "p95 latency is {{ $value }}s on paymentprocessing"
+
+      # ── Service Down ─────────────────────────────────────────────────────────
+      - alert: ServiceDown_paymentprocessing
+        expr: |
+          up{job="paymentprocessing"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: paymentprocessing
+        annotations:
+          summary: "paymentprocessing is DOWN"
+          description: "paymentprocessing Prometheus target is not reachable"
+
+      # ── High Heap Memory ─────────────────────────────────────────────────────
+      - alert: HighHeapMemory_paymentprocessing
+        expr: |
+          (jvm_memory_used_bytes{service="paymentprocessing",area="heap"} /
+           jvm_memory_max_bytes{service="paymentprocessing",area="heap"}) > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          service: paymentprocessing
+        annotations:
+          summary: "JVM Heap above 85% on paymentprocessing"
+          description: "Heap usage is {{ $value | humanizePercentage }} on paymentprocessing"
+
+      # ── Too Many 5xx Responses ───────────────────────────────────────────────
+      - alert: High5xxRate_paymentprocessing
+        expr: |
+          rate(http_server_requests_seconds_count{service="paymentprocessing",status=~"5.."}[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+          service: paymentprocessing
+        annotations:
+          summary: "High 5xx rate on paymentprocessing"
+          description: "5xx rate is {{ $value | humanize }} req/s on paymentprocessing"
+
+      # ── High CPU Usage ───────────────────────────────────────────────────────
+      - alert: HighCpuUsage_paymentprocessing
+        expr: |
+          process_cpu_usage{service="paymentprocessing"} > 0.80
+        for: 5m
+        labels:
+          severity: warning
+          service: paymentprocessing
+        annotations:
+          summary: "CPU above 80% on paymentprocessing"
+          description: "CPU usage is {{ $value | humanizePercentage }} on paymentprocessing"
